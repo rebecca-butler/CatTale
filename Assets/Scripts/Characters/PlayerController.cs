@@ -2,7 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour {
+public class PlayerController : MonoBehaviour 
+{
     public float moveSpeed;
     public LayerMask solidObjectsLayer;
     public LayerMask grassLayer;
