@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour {
     public float moveSpeed;
     public LayerMask solidObjectsLayer;
+    public LayerMask grassLayer;
     public LayerMask interactableLayer;
 
     private bool isMoving;
@@ -54,13 +55,17 @@ public class PlayerController : MonoBehaviour {
     IEnumerator Move(Vector3 targetPos) {
         isMoving = true;
 
+        // While player hasn't reached target, continue moving it towards target
         while ((targetPos - transform.position).sqrMagnitude > Mathf.Epsilon) {
             transform.position = Vector3.MoveTowards(transform.position, targetPos, moveSpeed * Time.deltaTime);
             yield return null;
         }
-
         transform.position = targetPos;
+
         isMoving = false;
+
+        // Check if the player should encounter an enemy
+        CheckForEncounters();
     }
 
     /* Interact with valid interactable objects */
@@ -87,5 +92,16 @@ public class PlayerController : MonoBehaviour {
             return false;
         }
         return true;
+    }
+
+    /* Check if the player should encounter an enemy */
+    private void CheckForEncounters() {
+        // Check if player position overlaps with the grass layer
+        if (Physics2D.OverlapCircle(transform.position, 0.2f, grassLayer) != null) {
+            // If player is on grass, encounter enemy 10% of the time
+            if (Random.Range(1, 101)  <= 10) {
+                Debug.Log("Encountered an enemy");
+            }
+        }
     }
 }
