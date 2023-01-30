@@ -13,8 +13,8 @@ public class BattleHud : MonoBehaviour
         nameText.text = pokemon.Base.Name;
         levelText.text = "Lvl " + pokemon.Level;
 
-        // set the HP bar to the current HP as a a proportion of the max HP
-        // i.e. HP bar is at scale 0.5 if the current heatlh is half the total
-        hpBar.SetHP((float) pokemon.HP / pokemon.MaxHP);
+        // Normalize the HP and use it to scale the UI bar
+        // i.e. Set UI bar scale to 0.5 if current heatlh is half the max
+        hpBar.SetHP((float) pokemon.HP/ pokemon.MaxHp);
     }
 }
