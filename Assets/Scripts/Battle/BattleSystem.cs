@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // Possible states of battle
-public enum BattleState { Start, PlayerAction, PlayerMove, EnemyMove, Busy };
+public enum BattleState { Start, PlayerAction, PlayerMove, EnemyMove };
 
 public class BattleSystem : MonoBehaviour
 {
@@ -48,7 +48,6 @@ public class BattleSystem : MonoBehaviour
     // Handle player action phase
     void PlayerAction() {
         state = BattleState.PlayerAction;
-        Debug.Log("Player action");
         StartCoroutine(dialogueBox.TypeDialogue("Choose an action."));
         dialogueBox.EnableActionSelector(true);
     }
@@ -56,10 +55,34 @@ public class BattleSystem : MonoBehaviour
     // Handle player move phase
     IEnumerator PlayerMove() {
         state = BattleState.PlayerMove;
-        Debug.Log("Player move");
         yield return dialogueBox.TypeDialogue($"{enemyUnit.Pokemon.Base.Name} says: don't kill me, I have a family :(");
-        yield return new WaitForSeconds(3f);
-        PlayerAction();
+        yield return new WaitForSeconds(1f);
+        StartCoroutine(EnemyMove());
+    }
+
+    // Handle enemy move phase
+    IEnumerator EnemyMove() {
+        state = BattleState.EnemyMove;
+
+        float r = Random.value;
+        if (r < 0.3f) {
+            yield return dialogueBox.TypeDialogue($"{enemyUnit.Pokemon.Base.Name} stubbed his toe!");
+        } else if (r >= 0.3f && r < 0.6f) {
+            yield return dialogueBox.TypeDialogue($"{enemyUnit.Pokemon.Base.Name} cried and took emotional damage!");
+        } else {
+            yield return dialogueBox.TypeDialogue($"{enemyUnit.Pokemon.Base.Name} is having a panic attack!");
+        }
+        yield return new WaitForSeconds(1f);
+
+        // Apply damage and update UI
+        bool isFainted = enemyUnit.Pokemon.TakeDamage(enemyUnit.Pokemon);
+        yield return enemyHud.UpdateHP();
+
+        if (isFainted) {
+            yield return dialogueBox.TypeDialogue($"{enemyUnit.Pokemon.Base.Name} fainted :(");
+        } else {
+            PlayerAction();
+        }
     }
 
     // Handle player keyboard input to select an action
@@ -82,7 +105,6 @@ public class BattleSystem : MonoBehaviour
 
         // Execute action when player presses z
         if (Input.GetKeyDown(KeyCode.Z)) {
-            state = BattleState.Busy;
             dialogueBox.EnableActionSelector(false);
 
             // Fight

@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f941c0a221ef2c845ad6711ac50665ae, type: 3}
   m_Name: Venusaur
   m_EditorClassIdentifier: 
-  name: 
+  name: Venusaur
   description: 
   frontSprite: {fileID: 21300000, guid: 179bd38ab997c7440844309bc52e708a, type: 3}
   backSprite: {fileID: 21300000, guid: 653a6fe1d97188644a3747cd5e674bc4, type: 3}
   type1: 1
   type2: 4
   maxHp: 65
-  attack: 53
-  defense: 53
+  attack: 100
+  defense: 100
   learnableMoves: []

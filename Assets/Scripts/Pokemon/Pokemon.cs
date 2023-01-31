@@ -37,4 +37,23 @@ public class Pokemon
     public int MaxHp {
         get { return Mathf.FloorToInt((Base.MaxHp * Level) / 100f) + 10; }
     }
+
+    /* Apply damage from attack
+     * @return true if pokemon fainted, false if not
+     */
+    public bool TakeDamage(Pokemon attacker) {
+        // Calculate damage taken
+        float modifiers = Random.Range(0.85f, 1f);
+        float a = (8 * attacker.Level + 10) / 8f;
+        float d = a * ((float)attacker.Attack / Defense) + 2;
+        int damage = Mathf.FloorToInt (d * modifiers);
+
+        HP -= damage;
+        if (HP <= 0) {
+            HP = 0;
+            return true;
+        }
+
+        return false;
+    }
 }
