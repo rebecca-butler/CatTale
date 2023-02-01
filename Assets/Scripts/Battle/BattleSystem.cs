@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,10 +14,12 @@ public class BattleSystem : MonoBehaviour
     [SerializeField] BattleHud enemyHud;
     [SerializeField] BattleDialogueBox dialogueBox;
 
+    public event Action<bool> OnBattleOver;
+
     BattleState state;
     int currentAction;
 
-    private void Start() {
+    public void StartBattle() {
         state = BattleState.Start;
         dialogueBox.EnableActionSelector(false);
         StartCoroutine(SetUpBattle());
@@ -39,7 +42,7 @@ public class BattleSystem : MonoBehaviour
     }
 
     // Update scene based on current battle state
-    private void Update() {
+    public void HandleUpdate() {
         if (state == BattleState.PlayerAction) {
             HandleActionSelection();
         }
@@ -64,13 +67,14 @@ public class BattleSystem : MonoBehaviour
     IEnumerator EnemyMove() {
         state = BattleState.EnemyMove;
 
-        float r = Random.value;
+        float r = UnityEngine.Random.value;
+        Debug.Log(r);
         if (r < 0.3f) {
-            yield return dialogueBox.TypeDialogue($"{enemyUnit.Pokemon.Base.Name} stubbed his toe!");
-        } else if (r >= 0.3f && r < 0.6f) {
             yield return dialogueBox.TypeDialogue($"{enemyUnit.Pokemon.Base.Name} cried and took emotional damage!");
-        } else {
+        } else if (r >= 0.3f && r < 0.6f) {
             yield return dialogueBox.TypeDialogue($"{enemyUnit.Pokemon.Base.Name} is having a panic attack!");
+        } else {
+            yield return dialogueBox.TypeDialogue($"{enemyUnit.Pokemon.Base.Name} stubbed his pinky toe!");
         }
         yield return new WaitForSeconds(1f);
 
@@ -80,6 +84,8 @@ public class BattleSystem : MonoBehaviour
 
         if (isFainted) {
             yield return dialogueBox.TypeDialogue($"{enemyUnit.Pokemon.Base.Name} fainted :(");
+            yield return new WaitForSeconds(2f);
+            OnBattleOver(true);
         } else {
             PlayerAction();
         }
