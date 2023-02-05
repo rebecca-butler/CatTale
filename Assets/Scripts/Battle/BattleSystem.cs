@@ -36,6 +36,8 @@ public class BattleSystem : MonoBehaviour
         // Start initial dialogue coroutine and wait 1 second
         yield return dialogueBox.TypeDialogue($"A wild {enemyUnit.Pokemon.Base.Name} appeared!");
         yield return new WaitForSeconds(1f);
+        yield return dialogueBox.TypeDialogue($"{enemyUnit.Pokemon.Base.Name} says: don't kill me, I have a family :(");
+        yield return new WaitForSeconds(1f);
 
         // Start player action phase
         PlayerAction();
@@ -56,10 +58,8 @@ public class BattleSystem : MonoBehaviour
     }
 
     // Handle player move phase
-    IEnumerator PlayerMove() {
+    void PlayerMove() {
         state = BattleState.PlayerMove;
-        yield return dialogueBox.TypeDialogue($"{enemyUnit.Pokemon.Base.Name} says: don't kill me, I have a family :(");
-        yield return new WaitForSeconds(1f);
         StartCoroutine(EnemyMove());
     }
 
@@ -68,7 +68,6 @@ public class BattleSystem : MonoBehaviour
         state = BattleState.EnemyMove;
 
         float r = UnityEngine.Random.value;
-        Debug.Log(r);
         if (r < 0.3f) {
             yield return dialogueBox.TypeDialogue($"{enemyUnit.Pokemon.Base.Name} cried and took emotional damage!");
         } else if (r >= 0.3f && r < 0.6f) {
@@ -88,6 +87,25 @@ public class BattleSystem : MonoBehaviour
             OnBattleOver(true);
         } else {
             PlayerAction();
+        }
+    }
+
+    // Handle player attempt to run away
+    IEnumerator PlayerRun() {
+        state = BattleState.PlayerMove;
+        float r = UnityEngine.Random.value;
+
+        // 90% chance of successfully escaping
+        if (r < 0.01f) {
+            yield return dialogueBox.TypeDialogue($"{playerUnit.Pokemon.Base.Name} ran away!");
+            yield return new WaitForSeconds(2f);
+            OnBattleOver(true);
+        } 
+        // 10% chance of failure to escape
+        else {
+            yield return dialogueBox.TypeDialogue($"{playerUnit.Pokemon.Base.Name} tried to run away, but got distracted by {enemyUnit.Pokemon.Base.Name} pleading for his son's life!");
+            yield return new WaitForSeconds(2f);
+            StartCoroutine(EnemyMove());
         }
     }
 
@@ -115,11 +133,11 @@ public class BattleSystem : MonoBehaviour
 
             // Fight
             if (currentAction == 0) {
-                StartCoroutine(PlayerMove());
+                PlayerMove();
             }
             // Run
             else if (currentAction == 1) {
-                StartCoroutine(PlayerMove());
+                StartCoroutine(PlayerRun());
             }
         }
     }
