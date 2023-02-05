@@ -1,11 +1,16 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour {
+public class PlayerController : MonoBehaviour 
+{
     public float moveSpeed;
     public LayerMask solidObjectsLayer;
+    public LayerMask grassLayer;
     public LayerMask interactableLayer;
+
+    public event Action OnEncountered;
 
     private bool isMoving;
     private Vector2 input;
@@ -17,7 +22,7 @@ public class PlayerController : MonoBehaviour {
     }
 
     /* Update player position */
-    private void Update() {
+    public void HandleUpdate() {
         if (!isMoving) {
             // Get user input from arrow keys
             input.x = Input.GetAxisRaw("Horizontal");
@@ -54,13 +59,17 @@ public class PlayerController : MonoBehaviour {
     IEnumerator Move(Vector3 targetPos) {
         isMoving = true;
 
+        // While player hasn't reached target, continue moving it towards target
         while ((targetPos - transform.position).sqrMagnitude > Mathf.Epsilon) {
             transform.position = Vector3.MoveTowards(transform.position, targetPos, moveSpeed * Time.deltaTime);
             yield return null;
         }
-
         transform.position = targetPos;
+
         isMoving = false;
+
+        // Check if the player should encounter an enemy
+        CheckForEncounters();
     }
 
     /* Interact with valid interactable objects */
@@ -87,5 +96,17 @@ public class PlayerController : MonoBehaviour {
             return false;
         }
         return true;
+    }
+
+    /* Check if the player should encounter an enemy */
+    private void CheckForEncounters() {
+        // Check if player position overlaps with the grass layer
+        if (Physics2D.OverlapCircle(transform.position, 0.2f, grassLayer) != null) {
+            // If player is on grass, encounter enemy 10% of the time
+            if (UnityEngine.Random.Range(1, 101)  <= 10) {
+                animator.SetBool("isMoving", false);
+                OnEncountered();
+            }
+        }
     }
 }
