@@ -15,10 +15,10 @@ public class PlayerController : MonoBehaviour
     private bool isMoving;
     private Vector2 input;
 
-    private Animator animator;
+    private CharacterAnimator animator;
 
     private void Awake() {
-        animator = GetComponent<Animator>();
+        animator = GetComponent<CharacterAnimator>();
     }
 
     /* Update player position */
@@ -33,8 +33,8 @@ public class PlayerController : MonoBehaviour
 
             // If input is non-zero, move player
             if (input != Vector2.zero) {
-                animator.SetFloat("moveX", input.x);
-                animator.SetFloat("moveY", input.y);
+                animator.MoveX = input.x;
+                animator.MoveY = input.y;
 
                 var targetPos = transform.position;
                 targetPos.x += input.x;
@@ -47,7 +47,7 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        animator.SetBool("isMoving", isMoving);
+        animator.IsMoving = isMoving;
 
         // If the user pushes Z, the player interacts with the object in front of it
         if (Input.GetKeyDown(KeyCode.Z)) {
@@ -75,7 +75,7 @@ public class PlayerController : MonoBehaviour
     /* Interact with valid interactable objects */
     void Interact() {
         // Get the direction the player is facing in
-        var facingDirection = new Vector3(animator.GetFloat("moveX"), animator.GetFloat("moveY"));
+        var facingDirection = new Vector3(animator.MoveX, animator.MoveY);
         // Get the position of the tile to interact with
         var interactPos = transform.position + facingDirection;
         Debug.DrawLine(transform.position, interactPos, Color.green, 0.5f);
@@ -104,7 +104,7 @@ public class PlayerController : MonoBehaviour
         if (Physics2D.OverlapCircle(transform.position, 0.2f, grassLayer) != null) {
             // If player is on grass, encounter enemy 10% of the time
             if (UnityEngine.Random.Range(1, 101)  <= 10) {
-                animator.SetBool("isMoving", false);
+                animator.IsMoving = false;
                 OnEncountered();
             }
         }
