@@ -17,6 +17,8 @@ public class DialogueManager : MonoBehaviour
     int currentLine = 0;
     bool isTyping;
 
+    public bool IsShowing { get; private set; }
+
     // Singleton to store instance of class
     public static DialogueManager Instance { get; private set; }
 
@@ -36,6 +38,7 @@ public class DialogueManager : MonoBehaviour
         this.dialogue = dialogue;
 
         // Show the dialogue box
+        IsShowing = true;
         dialogueBox.SetActive(true);
         StartCoroutine(TypeDialogue(dialogue.Lines[0]));
     }
@@ -49,6 +52,7 @@ public class DialogueManager : MonoBehaviour
             } else {
                 // Reset, close dialogue box and emit event
                 currentLine = 0;
+                IsShowing = false;
                 dialogueBox.SetActive(false);
                 OnCloseDialogue?.Invoke();
             }
