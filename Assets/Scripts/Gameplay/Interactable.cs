@@ -5,5 +5,5 @@ using UnityEngine;
 /* Base class interface for all interactable objects */
 public interface Interactable
 {
-    void Interact();
+    void Interact(Transform initiator);
 }
