@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour 
 {
-    public event Action OnEncountered;
+    const float offsetY = 0.3f;
 
     private Vector2 input;
 
@@ -27,7 +27,7 @@ public class PlayerController : MonoBehaviour
 
             // If input is non-zero, move player
             if (input != Vector2.zero) {
-                StartCoroutine(character.Move(input, CheckForEncounters));
+                StartCoroutine(character.Move(input, OnMoveOver));
             }
         }
 
@@ -55,14 +55,18 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    /* Check if the player should encounter an enemy */
-    private void CheckForEncounters() {
-        // Check if player position overlaps with the grass layer
-        if (Physics2D.OverlapCircle(transform.position, 0.2f, GameLayers.i.GrassLayer) != null) {
-            // If player is on grass, encounter enemy 10% of the time
-            if (UnityEngine.Random.Range(1, 101)  <= 10) {
+    /* Check if any triggerables were encountered */
+    private void OnMoveOver() {
+        // Get all colliders that overlap with the circle
+        var colliders = Physics2D.OverlapCircleAll(transform.position - new Vector3(0, offsetY), 0.2f, GameLayers.i.TriggerableLayers);
+
+        // For each collider, if they are triggerable, call the callback
+        foreach(var collider in colliders) {
+            var triggerable = collider.GetComponent<IPlayerTriggerable>();
+            if (triggerable != null) {
                 character.Animator.IsMoving = false;
-                OnEncountered();
+                triggerable.OnPlayerTriggered(this);
+                break;
             }
         }
     }

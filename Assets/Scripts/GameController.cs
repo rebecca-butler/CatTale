@@ -12,8 +12,14 @@ public class GameController : MonoBehaviour
 
     GameState state;
 
+    // Singleton to store instance of class
+    public static GameController Instance { get; private set; }
+
+    private void Awake() {
+       Instance = this; 
+    }
+
     private void Start() {
-        playerController.OnEncountered += StartBattle;
         battleSystem.OnBattleOver += EndBattle;
 
         DialogueManager.Instance.OnShowDialogue += () => {
@@ -26,7 +32,7 @@ public class GameController : MonoBehaviour
         };
     }
 
-    void StartBattle() {
+    public void StartBattle() {
         state = GameState.Battle;
         
         // Enable battle system and disble main camera
