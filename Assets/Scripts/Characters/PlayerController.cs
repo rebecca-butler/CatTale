@@ -5,8 +5,6 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour 
 {
-    const float offsetY = 0.3f;
-
     private Vector2 input;
 
     private Character character;
@@ -58,7 +56,7 @@ public class PlayerController : MonoBehaviour
     /* Check if any triggerables were encountered */
     private void OnMoveOver() {
         // Get all colliders that overlap with the circle
-        var colliders = Physics2D.OverlapCircleAll(transform.position - new Vector3(0, offsetY), 0.2f, GameLayers.i.TriggerableLayers);
+        var colliders = Physics2D.OverlapCircleAll(transform.position - new Vector3(0, character.OffsetY), 0.2f, GameLayers.i.TriggerableLayers);
 
         // For each collider, if they are triggerable, call the callback
         foreach(var collider in colliders) {
@@ -70,4 +68,6 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+
+    public Character Character => character;
 }
