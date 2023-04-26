@@ -12,6 +12,7 @@ public class DialogueManager : MonoBehaviour
 
     public event Action OnShowDialogue;
     public event Action OnCloseDialogue;
+    public event Action OnFinishedDialogue;
 
     Dialogue dialogue;
     int currentLine = 0;
@@ -26,7 +27,7 @@ public class DialogueManager : MonoBehaviour
        Instance = this; 
     }
 
-    public IEnumerator ShowDialogue(Dialogue dialogue) {
+    public IEnumerator ShowDialogue(Dialogue dialogue, Action onFinished=null) {
         // Wait until next frame to prevent skipping first line of dialogue
         // because HandleUpdate() is called in the same frame and z is still pressed
         yield return new WaitForEndOfFrame();
@@ -34,11 +35,11 @@ public class DialogueManager : MonoBehaviour
         // Invoke event that game controller subscribes to
         OnShowDialogue?.Invoke();
 
-        // Store input dialogue
-        this.dialogue = dialogue;
-
         // Show the dialogue box
         IsShowing = true;
+        this.dialogue = dialogue;
+        OnFinishedDialogue = onFinished;
+
         dialogueBox.SetActive(true);
         StartCoroutine(TypeDialogue(dialogue.Lines[0]));
     }
@@ -54,6 +55,7 @@ public class DialogueManager : MonoBehaviour
                 currentLine = 0;
                 IsShowing = false;
                 dialogueBox.SetActive(false);
+                OnFinishedDialogue?.Invoke();
                 OnCloseDialogue?.Invoke();
             }
         }
