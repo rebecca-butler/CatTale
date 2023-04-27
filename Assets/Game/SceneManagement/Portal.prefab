@@ -42,7 +42,7 @@ GameObject:
   - component: {fileID: 6233755496714868810}
   - component: {fileID: 4800623983324150329}
   - component: {fileID: 4142366724511264187}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Portal
   m_TagString: Untagged
   m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
@@ -104,3 +104,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneToLoad: -1
+  destinationPortal: 0
+  spawnPoint: {fileID: 0}

@@ -144,7 +144,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5892867785850511875, guid: 29c9c10d0e0e1e644b63833f51aa1481, type: 3}
       propertyPath: m_Name
-      value: Portal
+      value: PortalA
       objectReference: {fileID: 0}
     - target: {fileID: 5892867785850511875, guid: 29c9c10d0e0e1e644b63833f51aa1481, type: 3}
       propertyPath: m_Layer
@@ -2660,7 +2660,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5892867785850511875, guid: 29c9c10d0e0e1e644b63833f51aa1481, type: 3}
       propertyPath: m_Name
-      value: LeftPortal
+      value: PortalB
       objectReference: {fileID: 0}
     - target: {fileID: 5892867785850511875, guid: 29c9c10d0e0e1e644b63833f51aa1481, type: 3}
       propertyPath: m_Layer
