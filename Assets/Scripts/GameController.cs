@@ -13,6 +13,9 @@ public class GameController : MonoBehaviour
     GameState state;
     GameState stateBeforePause;
 
+    public SceneDetails CurrentScene { get; private set; }
+    public SceneDetails PreviousScene { get; private set; }
+
     // Singleton to store instance of class
     public static GameController Instance { get; private set; }
 
@@ -70,5 +73,10 @@ public class GameController : MonoBehaviour
         else if (state == GameState.Dialogue) {
             DialogueManager.Instance.HandleUpdate();
         }
+    }
+
+    public void SetCurrentScene(SceneDetails currScene) {
+        PreviousScene = CurrentScene;
+        CurrentScene = currScene;
     }
 }
