@@ -10,25 +10,32 @@ public class Portal : MonoBehaviour, IPlayerTriggerable
     [SerializeField] Transform spawnPoint;
 
     PlayerController player;
+    Fader fader;
 
     public void OnPlayerTriggered(PlayerController player) {
         this.player = player;
-       StartCoroutine(SwitchScene());
+        StartCoroutine(SwitchScene());
+    }
+
+    private void Start() {
+        fader = FindObjectOfType<Fader>();
     }
 
     IEnumerator SwitchScene() {
         DontDestroyOnLoad(gameObject);
 
-        // Pause game and load new scene
+        // Pause game, fade out, and load new scene
         GameController.Instance.PauseGame(true);
+        yield return fader.FadeIn(0.5f);
         yield return SceneManager.LoadSceneAsync(sceneToLoad);
 
         // Get destination portal in new scene and update player position
         var destPortal = FindObjectsOfType<Portal>().First(x => x != this && x.destinationPortal == this.destinationPortal);
         player.Character.SetPositionAndSnapToTile(destPortal.spawnPoint.position);
 
-        // When updates are done, unpause and destroy this portal
+        // When updates are done, unpause game, fade in, and destroy this portal
         GameController.Instance.PauseGame(false);
+        yield return fader.FadeOut(0.5f);
         Destroy(gameObject);
     }
 
