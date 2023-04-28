@@ -65,6 +65,17 @@ public class GameController : MonoBehaviour
 
     private void Update() {
         if (state == GameState.FreeRoam) {
+            // If s key is pressed, save game
+            if (Input.GetKeyDown(KeyCode.S)) {
+                SavingSystem.i.Save("save_slot_1");
+            }
+            
+            // If l key is pressed, load game
+            if (Input.GetKeyDown(KeyCode.L)) {
+                SavingSystem.i.Load("save_slot_1");
+            }
+
+            // Handle player updates
             playerController.HandleUpdate();
         }
         else if (state == GameState.Battle) {

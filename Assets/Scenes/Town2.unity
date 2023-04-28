@@ -474,7 +474,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1455475134}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -18.5, y: 10.8, z: 0}
+  m_LocalPosition: {x: -25.5, y: 10.8, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -542,14 +542,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialogue:
     lines:
-    - Hello, my name is Pantalaimon.
-    - I love you <3
+    - What are you doing? Get away from me.
   movementPattern:
-  - {x: 2, y: 0}
   - {x: 0, y: -2}
-  - {x: -2, y: 0}
   - {x: 0, y: 2}
-  timeBetweenPatterns: 2
+  timeBetweenPatterns: 0.5
 --- !u!114 &1455475140
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -590,7 +587,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c6b511475591664b8777bf79aa9d55a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
+  moveSpeed: 1
 --- !u!1 &1809818224
 GameObject:
   m_ObjectHideFlags: 0
