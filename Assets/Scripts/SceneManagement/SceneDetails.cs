@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -7,6 +8,8 @@ using UnityEngine.SceneManagement;
 public class SceneDetails : MonoBehaviour
 {
     [SerializeField] List<SceneDetails> connectedScenes;
+
+    List<SavableEntity> savableEntities;
 
     public bool IsLoaded { get; private set; }
 
@@ -24,13 +27,19 @@ public class SceneDetails : MonoBehaviour
             }
 
             // Unload all scenes that are no longer connected
-            if (GameController.Instance.PreviousScene != null) {
-                var previouslyConnectedScenes = GameController.Instance.PreviousScene.connectedScenes;
+            var previousScene = GameController.Instance.PreviousScene;
+            if (previousScene != null) {
+                var previouslyConnectedScenes = previousScene.connectedScenes;
                 foreach (var scene in previouslyConnectedScenes) {
-                    // If previous scene is not currently connected and it's not this scene, unload
+                    // If previously connected scene is not currently connected and it's not this scene, unload
                     if (!connectedScenes.Contains(scene) && scene != this) {
                         scene.UnloadScene();
                     }
+                }
+
+                // If the previous scene itself is no longer connected, unload it too
+                if (!connectedScenes.Contains(previousScene)) {
+                    previousScene.UnloadScene();
                 }
             }
         }
@@ -39,15 +48,32 @@ public class SceneDetails : MonoBehaviour
     public void LoadScene() {
         if (!IsLoaded) {
             // Load in additive mode (don't destroy other open scenes)
-            SceneManager.LoadSceneAsync(gameObject.name, LoadSceneMode.Additive);
+            var operation = SceneManager.LoadSceneAsync(gameObject.name, LoadSceneMode.Additive);
             IsLoaded = true;
+
+            // Wait until scene loading is complete
+            operation.completed += (AsyncOperation op) => {
+                // Restore state of savable entities in scene
+                savableEntities = GetSavableEntitiesInScene();
+                SavingSystem.i.RestoreEntityStates(savableEntities);
+            };
         }
     }
 
     public void UnloadScene() {
+        Debug.Log($"UnloadScene: {gameObject.name}");
         if (IsLoaded) {
+            // Store state of savable entities in scene
+            SavingSystem.i.CaptureEntityStates(savableEntities);
+
             SceneManager.UnloadSceneAsync(gameObject.name);
             IsLoaded = false;
         }
+    }
+
+    List<SavableEntity> GetSavableEntitiesInScene() {
+        var currentScene = SceneManager.GetSceneByName(gameObject.name);
+        var savableEntities = FindObjectsOfType<SavableEntity>().Where(x => x.gameObject.scene == currentScene).ToList();
+        return savableEntities;
     }
 }

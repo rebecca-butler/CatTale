@@ -14,15 +14,19 @@ public class SavingSystem : MonoBehaviour
         i = this;
     }
 
-    // Hashmap to look up savable entity states by savable entity ID
+    // Hashmap to look up entity states by entity ID
     Dictionary<string, object> gameState = new Dictionary<string, object>();
 
+    // Store input savable entities in the gameState
+    // Used for storing state when unloading a scene
     public void CaptureEntityStates(List<SavableEntity> savableEntities) {
         foreach (SavableEntity savable in savableEntities) {
             gameState[savable.UniqueId] = savable.CaptureState();
         }
     }
 
+    // Restore input savable entities from the gameState
+    // Used for restoring state when loading a scene
     public void RestoreEntityStates(List<SavableEntity> savableEntities) {
         foreach (SavableEntity savable in savableEntities) {
             string id = savable.UniqueId;
@@ -31,34 +35,40 @@ public class SavingSystem : MonoBehaviour
         }
     }
 
-    public void Save(string saveFile) {
-        CaptureState(gameState);
-        SaveFile(saveFile, gameState);
-    }
-
-    public void Load(string saveFile) {
-        gameState = LoadFile(saveFile);
-        RestoreState(gameState);
-    }
-
-    public void Delete(string saveFile) {
-        File.Delete(GetPath(saveFile));
-    }
-
-    // Capture states of all savable objects in the game
+    // Capture states of all savable objects in the currently loaded scene
     private void CaptureState(Dictionary<string, object> state) {
         foreach (SavableEntity savable in FindObjectsOfType<SavableEntity>()) {
             state[savable.UniqueId] = savable.CaptureState();
         }
     }
 
-    // Restore states of all savable objects in the game
+    // Restore states of all savable objects in the currently loaded scene
     private void RestoreState(Dictionary<string, object> state) {
         foreach (SavableEntity savable in FindObjectsOfType<SavableEntity>()) {
             string id = savable.UniqueId;
             if (state.ContainsKey(id))
                 savable.RestoreState(state[id]);
         }
+    }
+
+    public void Save(string saveFile) {
+        // Update gameState by capturing current savable objects
+        CaptureState(gameState);
+
+        // Save gameState to file
+        SaveFile(saveFile, gameState);
+    }
+
+    public void Load(string saveFile) {
+        // Load gameState from file
+        gameState = LoadFile(saveFile);
+        
+        // Update gameState by restoring current savable objects
+        RestoreState(gameState);
+    }
+
+    public void Delete(string saveFile) {
+        File.Delete(GetPath(saveFile));
     }
 
     void SaveFile(string saveFile, Dictionary<string, object> state) {
