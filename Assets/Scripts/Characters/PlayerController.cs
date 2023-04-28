@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour 
+public class PlayerController : MonoBehaviour, ISavable
 {
     private Vector2 input;
 
@@ -67,6 +67,18 @@ public class PlayerController : MonoBehaviour
                 break;
             }
         }
+    }
+
+    /* Store player state on save */
+    public object CaptureState() {
+        float[] position = new float[] { transform.position.x, transform.position.y };
+        return position;
+    }
+
+    /* Restore player state on load */
+    public void RestoreState(object state) {
+        var position = (float[])state;
+        transform.position = new Vector3(position[0], position[1]);
     }
 
     public Character Character => character;
