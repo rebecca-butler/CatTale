@@ -61,7 +61,6 @@ public class SceneDetails : MonoBehaviour
     }
 
     public void UnloadScene() {
-        Debug.Log($"UnloadScene: {gameObject.name}");
         if (IsLoaded) {
             // Store state of savable entities in scene
             SavingSystem.i.CaptureEntityStates(savableEntities);

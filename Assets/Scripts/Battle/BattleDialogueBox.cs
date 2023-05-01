@@ -6,7 +6,6 @@ using UnityEngine.UI;
 public class BattleDialogueBox : MonoBehaviour
 {
     [SerializeField] int lettersPerSecond;
-    [SerializeField] Color highlightedColor;
     [SerializeField] Text dialogueText;
 
     [SerializeField] GameObject actionSelector;
@@ -39,7 +38,7 @@ public class BattleDialogueBox : MonoBehaviour
     public void UpdateActionSelection(int selectedAction) {
         for (int i = 0; i < actionTexts.Count; ++i) {
             if (i == selectedAction) {
-                actionTexts[i].color = highlightedColor;
+                actionTexts[i].color = GlobalSettings.i.HighlightedColor;
             } else {
                 actionTexts[i].color = Color.black;
             }

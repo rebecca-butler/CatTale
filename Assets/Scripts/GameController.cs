@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum GameState { FreeRoam, Battle, Dialogue, Paused }
+public enum GameState { FreeRoam, Battle, Dialogue, Menu, Paused }
 
 public class GameController : MonoBehaviour
 {
@@ -16,11 +16,15 @@ public class GameController : MonoBehaviour
     public SceneDetails CurrentScene { get; private set; }
     public SceneDetails PreviousScene { get; private set; }
 
+    MenuController menuController;
+
     // Singleton to store instance of class
     public static GameController Instance { get; private set; }
 
     private void Awake() {
-       Instance = this; 
+        Instance = this;
+
+        menuController = GetComponent<MenuController>();
     }
 
     private void Start() {
@@ -34,6 +38,11 @@ public class GameController : MonoBehaviour
                 state = GameState.FreeRoam;
             }
         };
+
+        menuController.onMenuExited += () => {
+            state = GameState.FreeRoam;
+        };
+        menuController.onMenuSelected += OnMenuSelected;
     }
 
     public void PauseGame(bool pause) {
@@ -65,14 +74,10 @@ public class GameController : MonoBehaviour
 
     private void Update() {
         if (state == GameState.FreeRoam) {
-            // If s key is pressed, save game
-            if (Input.GetKeyDown(KeyCode.S)) {
-                SavingSystem.i.Save("save_slot_1");
-            }
-            
-            // If l key is pressed, load game
-            if (Input.GetKeyDown(KeyCode.L)) {
-                SavingSystem.i.Load("save_slot_1");
+            // If Enter key is pressed, open menu
+            if (Input.GetKeyDown(KeyCode.Return)) {
+                menuController.OpenMenu();
+                state = GameState.Menu;
             }
 
             // Handle player updates
@@ -84,10 +89,29 @@ public class GameController : MonoBehaviour
         else if (state == GameState.Dialogue) {
             DialogueManager.Instance.HandleUpdate();
         }
+        else if (state == GameState.Menu) {
+            menuController.HandleUpdate();
+        }
     }
 
     public void SetCurrentScene(SceneDetails currScene) {
         PreviousScene = CurrentScene;
         CurrentScene = currScene;
+    }
+
+    void OnMenuSelected(int selectedItem) {
+        if (selectedItem == 0) {
+            // Bag
+        }
+        else if (selectedItem == 1) {
+            // Save
+            SavingSystem.i.Save("save_slot_1");
+        }
+        else if (selectedItem == 2) {
+            // Load
+            SavingSystem.i.Load("save_slot_1");
+        }
+
+        state = GameState.FreeRoam;
     }
 }

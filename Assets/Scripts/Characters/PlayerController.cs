@@ -43,7 +43,6 @@ public class PlayerController : MonoBehaviour, ISavable
         var facingDirection = new Vector3(character.Animator.MoveX, character.Animator.MoveY);
         // Get the position of the tile to interact with
         var interactPos = transform.position + facingDirection;
-        Debug.DrawLine(transform.position, interactPos, Color.green, 0.5f);
 
         // If there is an interactable object in the interact position, interact with it
         var collider = Physics2D.OverlapCircle(interactPos, 0.3f, GameLayers.i.InteractableLayer);
@@ -62,7 +61,6 @@ public class PlayerController : MonoBehaviour, ISavable
         foreach(var collider in colliders) {
             var triggerable = collider.GetComponent<IPlayerTriggerable>();
             if (triggerable != null) {
-                Debug.Log(collider);
                 triggerable.OnPlayerTriggered(this);
                 break;
             }
