@@ -1,14 +1,16 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum GameState { FreeRoam, Battle, Dialogue, Menu, Paused }
+public enum GameState { FreeRoam, Battle, Dialogue, Menu, Bag, Paused }
 
 public class GameController : MonoBehaviour
 {
     [SerializeField] PlayerController playerController;
     [SerializeField] BattleSystem battleSystem;
     [SerializeField] Camera worldCamera;
+    [SerializeField] InventoryUI inventoryUI;
 
     GameState state;
     GameState stateBeforePause;
@@ -92,6 +94,14 @@ public class GameController : MonoBehaviour
         else if (state == GameState.Menu) {
             menuController.HandleUpdate();
         }
+        else if (state == GameState.Bag) {
+            Action onBack = () => {
+                inventoryUI.gameObject.SetActive(false);
+                state = GameState.FreeRoam;
+            };
+
+            inventoryUI.HandleUpdate(onBack);
+        }
     }
 
     public void SetCurrentScene(SceneDetails currScene) {
@@ -102,16 +112,18 @@ public class GameController : MonoBehaviour
     void OnMenuSelected(int selectedItem) {
         if (selectedItem == 0) {
             // Bag
+            inventoryUI.gameObject.SetActive(true);
+            state = GameState.Bag;
         }
         else if (selectedItem == 1) {
             // Save
             SavingSystem.i.Save("save_slot_1");
+            state = GameState.FreeRoam;
         }
         else if (selectedItem == 2) {
             // Load
             SavingSystem.i.Load("save_slot_1");
+            state = GameState.FreeRoam;
         }
-
-        state = GameState.FreeRoam;
     }
 }

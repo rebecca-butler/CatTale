@@ -1972,6 +1972,7 @@ MonoBehaviour:
   playerController: {fileID: 1809369346660945172}
   battleSystem: {fileID: 1809369348399668933}
   worldCamera: {fileID: 1809369348153359246}
+  inventoryUI: {fileID: 1907589900189872051}
 --- !u!114 &1809369348292305688
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2467,6 +2468,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 4692786799662898100, guid: 337d7be538ec8e54697100326c7f0e9e, type: 3}
   m_PrefabInstance: {fileID: 6357969344312086420}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1907589900189872051 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4775246647539736615, guid: 337d7be538ec8e54697100326c7f0e9e, type: 3}
+  m_PrefabInstance: {fileID: 6357969344312086420}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36b6cffb08ac6fb4f9c837605b8afab3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7793769879847519158 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3752909194592308258, guid: 337d7be538ec8e54697100326c7f0e9e, type: 3}
