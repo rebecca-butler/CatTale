@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f22e57da24a9f3a4284bfda4a8267863, type: 3}
+  m_Name: Nutella
+  m_EditorClassIdentifier: 
+  name: Nutella
+  description: Delicious for humans, but toxic for canine friends.
+  icon: {fileID: 21300000, guid: 9a2a016921c2652469d48d5235792d0d, type: 3}
+  hpAmount: 3
+  restoreMaxHP: 0
+  revive: 0
