@@ -95,6 +95,11 @@ public class InventoryUI : MonoBehaviour
     }
 
     private void HandleScrolling() {
+        // No need to scroll if the number of items is less than the max number in viewport
+        if (slotUIList.Count <= itemsInViewport) {
+            return;
+        }
+
         // Index to scroll to. If selected item is in top half, clamp to 0
         int scrollIndex = Mathf.Clamp(selectedItem - itemsInViewport / 2, 0, selectedItem);
 
