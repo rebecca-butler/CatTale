@@ -11,6 +11,7 @@ public class GameController : MonoBehaviour
     [SerializeField] BattleSystem battleSystem;
     [SerializeField] Camera worldCamera;
     [SerializeField] InventoryUI inventoryUI;
+    [SerializeField] PlayerStatsUI playerStatsUI;
 
     GameState state;
     GameState stateBeforePause;
@@ -42,9 +43,17 @@ public class GameController : MonoBehaviour
         };
 
         menuController.onMenuExited += () => {
+            playerStatsUI.gameObject.SetActive(false);
             state = GameState.FreeRoam;
         };
         menuController.onMenuSelected += OnMenuSelected;
+
+        playerController.OnStatsUpdated += (PlayerStats) => {
+            playerStatsUI.SetName(PlayerStats.PlayerName);
+            playerStatsUI.SetHP(PlayerStats.HP, PlayerStats.MaxHP);
+            playerStatsUI.SetIntelligence(PlayerStats.Intelligence);
+            playerStatsUI.SetStrength(PlayerStats.Strength);
+        };
     }
 
     public void PauseGame(bool pause) {
@@ -78,6 +87,7 @@ public class GameController : MonoBehaviour
         if (state == GameState.FreeRoam) {
             // If Enter key is pressed, open menu
             if (Input.GetKeyDown(KeyCode.Return)) {
+                playerStatsUI.gameObject.SetActive(true);
                 menuController.OpenMenu();
                 state = GameState.Menu;
             }
@@ -110,6 +120,7 @@ public class GameController : MonoBehaviour
     }
 
     void OnMenuSelected(int selectedItem) {
+        playerStatsUI.gameObject.SetActive(false);
         if (selectedItem == 0) {
             // Bag
             inventoryUI.gameObject.SetActive(true);

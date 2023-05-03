@@ -17,12 +17,12 @@ public class BattleHud : MonoBehaviour
         nameText.text = pokemon.Base.Name;
         levelText.text = "Lvl " + pokemon.Level;
 
-        hpBar.SetHP((float) pokemon.HP/ pokemon.MaxHp);
+        hpBar.SetHP((float) pokemon.HP / pokemon.MaxHp);
     }
 
     // Normalize the HP and use it to scale the UI bar
     // i.e. Set UI bar scale to 0.5 if current heatlh is half the max
     public IEnumerator UpdateHP() {
-        yield return hpBar.SetHPSmooth((float) _pokemon.HP/ _pokemon.MaxHp);
+        yield return hpBar.SetHPSmooth((float) _pokemon.HP / _pokemon.MaxHp);
     }
 }

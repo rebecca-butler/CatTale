@@ -5,12 +5,19 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour, ISavable
 {
-    private Vector2 input;
+    [SerializeField] PlayerStats playerStats;
 
+    public event Action<PlayerStats> OnStatsUpdated; // TODO: move stat updating to its own script
+    
+    private Vector2 input;
     private Character character;
 
     private void Awake() {
         character = GetComponent<Character>();
+    }
+
+    private void Start() {
+        OnStatsUpdated?.Invoke(playerStats);
     }
 
     /* Update player position */
