@@ -12,19 +12,26 @@ public class InventoryUI : MonoBehaviour
     [SerializeField] Image itemIcon;
     [SerializeField] Text itemDescription;
 
+    [SerializeField] Image upArrow;
+    [SerializeField] Image downArrow;
+
     int selectedItem = 0;
+    int itemsInViewport = 8;
 
     List<ItemSlotUI> slotUIList;
     Inventory inventory;
+    RectTransform itemListRect;
 
     private void Awake() {
         inventory = Inventory.GetInventory();
+        itemListRect = itemList.GetComponent<RectTransform>();
     }
 
     private void Start() {
         UpdateItemList();
     }
 
+    // Clear item list and fill with items from inventory
     void UpdateItemList() {
         // Clear existing items from itemList game object by removing its children
         foreach (Transform child in itemList.transform) {
@@ -82,6 +89,25 @@ public class InventoryUI : MonoBehaviour
             var item = inventory.Slots[selectedItem].Item;
             itemIcon.sprite = item.Icon;
             itemDescription.text = item.Description;
+
+            HandleScrolling();
         }
+    }
+
+    private void HandleScrolling() {
+        // Index to scroll to. If selected item is in top half, clamp to 0
+        int scrollIndex = Mathf.Clamp(selectedItem - itemsInViewport / 2, 0, selectedItem);
+
+        // Scroll position is the index to scroll to multiplied by the item slot height
+        float scrollPos = scrollIndex * slotUIList[0].Height;
+
+        // Update y position of item list rect transform. Use local position because itemList is a child object
+        itemListRect.localPosition = new Vector2(itemListRect.localPosition.x, scrollPos);
+
+        // Show arrows depending on where selected item is in viewport
+        bool showUpArrow = selectedItem > (itemsInViewport / 2);
+        bool showDownArrow = selectedItem + (itemsInViewport / 2) < slotUIList.Count;
+        upArrow.gameObject.SetActive(showUpArrow);
+        downArrow.gameObject.SetActive(showDownArrow);
     }
 }

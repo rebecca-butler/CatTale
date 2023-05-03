@@ -8,11 +8,19 @@ public class ItemSlotUI : MonoBehaviour
     [SerializeField] Text nameText;
     [SerializeField] Text countText;
 
-    public Text NameText => nameText;
-    public Text CountText => countText;
+    RectTransform rectTransform;
+
+    private void Awake() {
+        rectTransform = GetComponent<RectTransform>();
+    }
 
     public void SetData(ItemSlot itemSlot) {
         nameText.text = itemSlot.Item.Name;
         countText.text = $"x {itemSlot.Count}";
     }
+
+    public Text NameText => nameText;
+    public Text CountText => countText;
+
+    public float Height => rectTransform.rect.height;
 }
